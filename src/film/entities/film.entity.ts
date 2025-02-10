@@ -25,7 +25,7 @@ export class Film {
   yearRelease: number;
 
   @Column()
-  duration: string;
+  duration: number;
 
   @Column()
   poster: string;

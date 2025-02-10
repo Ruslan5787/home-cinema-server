@@ -30,7 +30,7 @@ export class FilmController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() createFilmDto: CreateFilmDto) {
     return this.filmService.create(createFilmDto);
   }
@@ -52,6 +52,7 @@ export class FilmController {
 
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
   update(@Param('id') id: string, @Body() updateFilmDto: UpdateFilmDto) {
     return this.filmService.update(+id, updateFilmDto);
   }

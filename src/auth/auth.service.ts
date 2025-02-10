@@ -26,6 +26,7 @@ export class AuthService {
       user?.password,
       password,
     );
+
     if (!passwordIsMatch) {
       throw new BadRequestException('Неверный пароль.');
     }
