@@ -14,9 +14,15 @@ async function bootstrap() {
     res.header('Access-Control-Allow-Credentials', 'true');
 
     if (req.method === 'OPTIONS') {
-      return res.sendStatus(204);
+      return res.sendStatus(204); // Отвечаем на preflight-запрос
     }
 
+    next();
+  });
+
+  app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.path}`);
+    console.log('Headers:', req.headers);
     next();
   });
 
