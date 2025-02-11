@@ -5,8 +5,6 @@ import {
   Delete,
   UseGuards,
   Req,
-  ValidationPipe,
-  UsePipes,
   Query,
 } from '@nestjs/common';
 import { WantToWatchedFilmsService } from './want-to-watched-films.service';
@@ -35,10 +33,10 @@ export class WantToWatchedFilmsController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ValidationPipe())
   findAll(@Req() req) {
     return this.wantToWatchedFilmsService.findAll(+req.user.id);
   }
+
   @Get(':type/:id')
   @UseGuards(JwtAuthGuard, AuthorGuard)
   findOne(@Param('id') id: string, @Req() req) {

@@ -6,6 +6,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -46,6 +48,10 @@ export class Film {
   restrictionAge: RestrictionAge;
 
   users?: User[];
+
+  @ManyToMany(() => Genre)
+  @JoinTable({ name: 'films_genres' })
+  genres: Genre[];
 
   @CreateDateColumn({ nullable: true, type: 'date' })
   createAt: Date;

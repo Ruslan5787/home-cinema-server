@@ -13,4 +13,6 @@ export class Genre {
     onDelete: 'SET NULL',
   })
   film: Film;
+
+  films?: Film[];
 }

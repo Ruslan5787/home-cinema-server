@@ -11,10 +11,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
-    TypeOrmModule.forFeature([WatchedFilm]),
-    TypeOrmModule.forFeature([WantToWatchedFilm]),
-    TypeOrmModule.forFeature([FavoriteFilm]),
+    TypeOrmModule.forFeature([
+      User,
+      WatchedFilm,
+      WantToWatchedFilm,
+      FavoriteFilm,
+    ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

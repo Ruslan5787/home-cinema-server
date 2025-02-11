@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GenreModule } from './genre/genre.module';
 import { RestrictionAgeModule } from './restriction-age/restriction-age.module';
+import { GenreFilmsModule } from './genre-films/genre-films.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { RestrictionAgeModule } from './restriction-age/restriction-age.module';
     WatchedFilmsModule,
     WantToWatchedFilmsModule,
     RestrictionAgeModule,
+    GenreFilmsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

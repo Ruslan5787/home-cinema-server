@@ -8,11 +8,14 @@ import { UpdateFilmDto } from './dto/update-film.dto';
 import { ILike, Repository } from 'typeorm';
 import { Film } from './entities/film.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Genre } from 'src/genre/entities/genre.entity';
 
 @Injectable()
 export class FilmService {
   constructor(
     @InjectRepository(Film) private readonly filmRepository: Repository<Film>,
+    @InjectRepository(Genre)
+    private readonly genreRepository: Repository<Genre>,
   ) {}
 
   async create(createFilmDto: CreateFilmDto) {
@@ -41,7 +44,11 @@ export class FilmService {
   }
 
   async findAll() {
-    const films = await this.filmRepository.find();
+    const films = await this.filmRepository.find({
+      relations: {
+        genres: true,
+      },
+    });
 
     if (!films) throw new NotFoundException('Библиотека пуста!');
 
@@ -76,6 +83,9 @@ export class FilmService {
       where: {
         id,
       },
+      relations: {
+        genres: true,
+      },
     });
 
     if (!film) throw new NotFoundException('Такого фильма нет!');
@@ -108,6 +118,9 @@ export class FilmService {
 
   async findAllWithPagination(page: number, limit: number) {
     const films = this.filmRepository.find({
+      relations: {
+        genres: true,
+      },
       take: limit,
       skip: (page - 1) * limit,
       order: {
@@ -116,5 +129,43 @@ export class FilmService {
     });
 
     return films;
+  }
+
+  async addGenreToFilm(filmId: number, genreId: number) {
+    const film = await this.filmRepository.findOne({
+      where: { id: filmId },
+      relations: ['genres'],
+    });
+
+    if (!film) throw new NotFoundException('Фильм не найден');
+
+    const genre = await this.genreRepository.findOne({
+      where: { id: genreId },
+    });
+    if (!genre) throw new NotFoundException('Жанр не найден');
+
+    // Добавляем жанр, если его нет в списке
+    if (!film.genres.some((g) => g.id === genreId)) {
+      film.genres.push(genre);
+      await this.filmRepository.save(film);
+    }
+
+    return film;
+  }
+
+  async removeGenreFromFilm(filmId: number, genreId: number) {
+    const film = await this.filmRepository.findOne({
+      where: { id: filmId },
+      relations: ['genres'],
+    });
+
+    if (!film) throw new NotFoundException('Фильм не найден');
+
+    // Оставляем только те жанры, которые НЕ совпадают с удаляемым
+    film.genres = film.genres.filter((genre) => genre.id !== genreId);
+
+    await this.filmRepository.save(film);
+
+    return film;
   }
 }

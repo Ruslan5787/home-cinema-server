@@ -67,4 +67,20 @@ export class FilmController {
   remove(@Param('id') id: string) {
     return this.filmService.remove(+id);
   }
+
+  @Post('films/:filmId/genres/:genreId')
+  async addGenre(
+    @Param('filmId') filmId: number,
+    @Param('genreId') genreId: number,
+  ) {
+    await this.filmService.addGenreToFilm(filmId, genreId);
+  }
+
+  @Delete(':filmId/genres/:genreId')
+  async removeGenre(
+    @Param('filmId') filmId: number,
+    @Param('genreId') genreId: number,
+  ) {
+    return this.filmService.removeGenreFromFilm(filmId, genreId);
+  }
 }
