@@ -23,7 +23,9 @@ export class WatchedFilmsService {
       },
       relations: {
         users: true,
-        films: true,
+        films: {
+          genres: true,
+        },
       },
     });
 
@@ -69,7 +71,9 @@ export class WatchedFilmsService {
       },
       relations: {
         users: true,
-        films: true,
+        films: {
+          genres: true,
+        },
       },
       take: limit,
       skip: (page - 1) * limit,

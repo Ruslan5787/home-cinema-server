@@ -1,3 +1,4 @@
+import { Expose, Type } from 'class-transformer';
 import { Genre } from 'src/genre/entities/genre.entity';
 import { RestrictionAge } from 'src/restriction-age/entities/restriction-age.entity';
 import { User } from 'src/user/entities/user.entity';

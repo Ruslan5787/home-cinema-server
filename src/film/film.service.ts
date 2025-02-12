@@ -41,6 +41,7 @@ export class FilmService {
     film.description = createFilmDto.description;
     film.restrictionAge = createFilmDto.restrictionAge;
     film.genre = createFilmDto.genre;
+    film.genres = createFilmDto.genres;
 
     await this.filmRepository.save(film);
   }
@@ -69,15 +70,15 @@ export class FilmService {
   }
 
   async getFilmsAboutGenre(genre: string) {
-    const films = await this.filmRepository
-      .createQueryBuilder('film')
-      .leftJoinAndSelect('film.genres', 'genre') // Подключаем таблицу жанров
-      .leftJoinAndSelect('film.restrictionAge', 'restrictionAge') // Подключаем таблицу жанров
-      .where('genre.name = :genre', { genre }) // Фильтруем по жанру
-      .getMany();
-
-    console.log(films);
-    
+    const films = await this.filmRepository.find({
+      where: {
+        genres: {
+          name: genre,
+        },
+      },
+      relations: ['genres'],
+      loadEagerRelations: true, // Убедитесь, что все связанные сущности загружаются
+    });
 
     return films;
   }
@@ -112,12 +113,30 @@ export class FilmService {
       where: {
         name: updateFilmDto.name,
       },
+      relations: ['genres'],
     });
 
     if (isFilmNameExist && id != isFilmNameExist.id)
       throw new NotFoundException('Фильм c таким названием уже существует.');
 
-    return await this.filmRepository.update(id, updateFilmDto);
+    const film = await this.filmRepository.findOne({
+      where: { id },
+      relations: ['genres'], // загружаем существующие жанры фильма
+    });
+
+    if (!film) throw new NotFoundException('Фильм не найден');
+
+    film.name = updateFilmDto.name;
+    film.poster = updateFilmDto.poster;
+    film.restrictionAge = updateFilmDto.restrictionAge;
+    film.production = updateFilmDto.production;
+    film.yearRelease = updateFilmDto.yearRelease;
+    film.duration = updateFilmDto.duration;
+    film.description = updateFilmDto.description;
+    film.genres = updateFilmDto.genres;
+
+    await this.filmRepository.save(film);
+    return film;
   }
 
   async findAllWithPagination(page: number, limit: number) {

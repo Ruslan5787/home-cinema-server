@@ -17,7 +17,9 @@ export class FavoriteFilmsService {
       },
       relations: {
         users: true,
-        films: true,
+        films: {
+          genres: true,
+        },
       },
     });
 
@@ -60,7 +62,9 @@ export class FavoriteFilmsService {
       },
       relations: {
         users: true,
-        films: true,
+        films: {
+          genres: true,
+        },
       },
       skip: (page - 1) * limit,
       take: limit,

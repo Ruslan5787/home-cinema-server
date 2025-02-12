@@ -1,5 +1,7 @@
 import { Transform } from 'class-transformer';
 import {
+  ArrayMinSize,
+  IsArray,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -29,6 +31,12 @@ export class CreateFilmDto {
 
   @IsNotEmpty({ message: 'Поле Жанр не может быть пустым.' })
   genre: Genre;
+
+  @IsArray()
+  @IsNotEmpty({ message: 'Поле Жанр не может быть пустым.' })
+  @Transform(({ value }) => JSON.parse(value))
+  @ArrayMinSize(1, { message: 'У фильма должен быть хотя бы 1 жанр!' })
+  genres: Genre[];
 
   @IsNotEmpty({ message: 'Поле Возраст не может быть пустым.' })
   restrictionAge: RestrictionAge;

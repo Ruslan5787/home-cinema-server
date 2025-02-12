@@ -17,7 +17,9 @@ export class WantToWatchedFilmsService {
       },
       relations: {
         users: true,
-        films: true,
+        films: {
+          genres: true,
+        },
       },
       skip: (page - 1) * limit,
       take: limit,
