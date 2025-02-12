@@ -5,3 +5,8 @@ export interface IUser {
   email: string;
   role: string;
 }
+
+export interface IGenre {
+  id: number;
+  name: string;
+}

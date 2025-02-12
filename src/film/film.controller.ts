@@ -10,11 +10,14 @@ import {
   UseGuards,
   Patch,
   Delete,
+  Put,
+  NotFoundException,
 } from '@nestjs/common';
 import { FilmService } from './film.service';
 import { CreateFilmDto } from './dto/create-film.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UpdateFilmDto } from './dto/update-film.dto';
+import { IGenre } from 'src/types/types';
 
 @Controller('film')
 export class FilmController {
@@ -68,19 +71,24 @@ export class FilmController {
     return this.filmService.remove(+id);
   }
 
-  @Post('films/:filmId/genres/:genreId')
-  async addGenre(
+  @Put(':filmId/genres')
+  async addGenresToFilm(
     @Param('filmId') filmId: number,
-    @Param('genreId') genreId: number,
+    @Body() genres: IGenre[],
   ) {
-    await this.filmService.addGenreToFilm(filmId, genreId);
+    try {
+      const updatedFilm = await this.filmService.addGenresToFilm(
+        filmId,
+        genres,
+      );
+      return updatedFilm;
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 
-  @Delete(':filmId/genres/:genreId')
-  async removeGenre(
-    @Param('filmId') filmId: number,
-    @Param('genreId') genreId: number,
-  ) {
-    return this.filmService.removeGenreFromFilm(filmId, genreId);
+  @Get('/films/:filmId/genres')
+  findAllFilmGenres(@Param('filmId') filmId: number) {
+    return this.filmService.findAllFilmGenres(filmId);
   }
 }
